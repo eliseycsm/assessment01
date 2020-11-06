@@ -18,6 +18,8 @@ const SQL_FIND_BOOK_BY_ID = 'select * from book2018 where book_id = ?'
 //env
 const PORT = process.env.PORT || 3000
 const API_KEY = process.env.API_KEY || ''
+const ENDPOINT = 'https://api.nytimes.com/svc/books/v3/reviews.json'
+
 
 //create database connection pool
 const pool = mysql.createPool({
@@ -40,7 +42,36 @@ app.set('views', __dirname + '/views')
 
 
 
+app.get("/reviews/:bookTitle", async (req, resp) => {
+    const bookTitle = req.params.bookTitle
 
+    const fullURL = withQuery(ENDPOINT, {
+        "api-key": API_KEY,
+        title: bookTitle
+
+    })
+    const result = await fetch(fullURL)
+    const listReviews = await result.json()
+    console.log("reviews list: ", listReviews)
+    
+    const copyright = listReviews.copyright
+
+    if (listReviews.num_results <= 0){
+        resp.status(200)
+        resp.type('text/html')
+        resp.send("<h3>Sorry, there are no reviews available for this book.</h3>")
+    } else {
+        resp.status(200)
+        resp.type('text/html')
+        resp.render('bookreview', {
+            reviews: listReviews.results,
+            copyright
+        })
+    }
+
+
+
+})
 
 
 //get book details from db
@@ -110,6 +141,7 @@ app.get("/search", async (req, resp) => {
             q: startKey,
             prevOffset: Math.max(0, OFFSET - LIMIT),
             nextOffset: (OFFSET + LIMIT),
+            needPrev: OFFSET > 0,
             noMoreNext: (OFFSET + LIMIT) < numOfBooks
         })
 

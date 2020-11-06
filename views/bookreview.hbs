@@ -1,0 +1,22 @@
+{{#each reviews}}
+
+    <div class="container">
+        <h2>Title: {{this.book_title}}</h2>
+        <em>by {{this.book_author}}</em>
+        <br>
+        <ul>
+            <li>Reviewer: {{this.byline}}</li>
+            <li>Date: {{this.publication_dt}}</li>
+        </ul>
+        <p>
+            {{this.summary}}
+
+        </p>
+
+        <a href="{{this.url}}" target="_blank">Full Review</a>
+    </div>
+
+{{/each}}
+
+
+{{this.copyright}}

@@ -9,7 +9,7 @@
     {{/each}}
     </ul>
 
-    {{#if prevOffset}}
+    {{#if needPrev}}
         <form method="GET" action="/search">
             <input type="hidden" name="q" value="{{q}}">
             <input type="hidden" name="offset" value={{prevOffset}}>
