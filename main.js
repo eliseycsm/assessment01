@@ -41,7 +41,7 @@ app.set('views', __dirname + '/views')
 
 
 
-
+//get book review from NYT API via bookTitle
 app.get("/reviews/:bookTitle", async (req, resp) => {
     const bookTitle = req.params.bookTitle
 
@@ -55,7 +55,7 @@ app.get("/reviews/:bookTitle", async (req, resp) => {
     })
     const result = await fetch(fullURL)
     const listReviews = await result.json()
-    console.log("reviews list: ", listReviews)
+    //console.log("reviews list: ", listReviews)
     
     const copyright = listReviews.copyright
 
@@ -70,7 +70,6 @@ app.get("/reviews/:bookTitle", async (req, resp) => {
     }
 )
 
-
 //get book details from db
 app.get("/book/:bookId", async (req, resp) => {
     const bookId = req.params.bookId
@@ -80,6 +79,7 @@ app.get("/book/:bookId", async (req, resp) => {
         const result = await conn.query(SQL_FIND_BOOK_BY_ID, [`${bookId}`])
         const bookDetails = result[0][0]
 
+        //console.info("bookDetails: ", JSON.stringify(bookDetails))
         //cleaned data
         const authors = bookDetails['authors'].split("|").join(", ")
         const genres = bookDetails['genres'].split("|").join(", ")
@@ -88,11 +88,25 @@ app.get("/book/:bookId", async (req, resp) => {
         //console.info("Book details: ", bookDetails)
         //console.info(bookDetails.title)
 
-        resp.status(200).type('text/html')
-        resp.render('details', {
-            bookDetails,
-            author: authors,
-            genre: genres
+        resp.status(200)
+        resp.format(
+            {
+            'text/html': () => {
+                resp.render('details', {
+                    bookDetails,
+                    author: authors,
+                    genre: genres
+                })
+            },
+            'application/json': () => {  
+                resp.send(JSON.stringify(bookDetails))
+            },
+            'default': () => {
+                resp.status(406)
+                resp.type('text/plain')
+                resp.send(`Not supported: ${req.get("Accept")}`)
+
+            }
         })
 
     } catch(e){
