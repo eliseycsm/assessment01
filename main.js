@@ -9,6 +9,11 @@ const app = express()
 
 app.use(morgan('combined'))
 
+//SQL
+const SQL_FIND_BY_STARTING_KEY = 'select book_id, title from book2018 where title like ? ORDER BY TITLE ASC LIMIT ? OFFSET ?'
+const SQL_TOTAL_BOOKS_WITH_STARTING_KEY = 'select count(*) from book2018 where title like ? '
+const LIMIT = 10
+
 //env
 const PORT = process.env.PORT || 3000;
 
@@ -46,18 +51,29 @@ app.get(["/", "/index.html"], (req, resp) => {
     })
 })
 
+
+
 //process startWith
 app.get("/startsWith", async (req, resp) => {
-    const keyLetter = req.query["q"]
-    console.info('key letter: ', keyLetter)
-    resp.status(200)
-    resp.type('text/html')
-    resp.end("search is working")
+    const startKey = req.query["q"]    
+    const conn = await pool.getConnection()
+    const OFFSET = parseInt(req.query['offset']) || 0
 
-    try {
+    try {    
+        const result = await conn.query(SQL_FIND_BY_STARTING_KEY, [`${startKey}%`, LIMIT, OFFSET])
+        const listOfBooks = result[0]
+        const numOfBooks = await conn.query(SQL_TOTAL_BOOKS_WITH_STARTING_KEY, [`${startKey}%`])
 
-        const conn = await pool.getConnection()
 
+        resp.status(200)
+        resp.type('text/html')
+        resp.render('listBooks', {
+            listOfBooks,
+            hasResults: listOfBooks.length > 0,
+            startKey,
+            prevOffset: Math.max(0, OFFSET - LIMIT),
+            nextOffset: (OFFSET + LIMIT),
+        })
 
     } catch(e){
         console.error("Error found: ", e)

@@ -1,0 +1,28 @@
+{{#if hasResults}}
+
+    <h2>Letter {{startKey}}</h2>
+
+    {{#each listOfBooks}}
+        <a href="/book/{{this.book_id}}">{{this.title}}</a>
+    {{/each}}
+
+
+    {{#if prevOffset}}
+        <form method="GET" action="/search">
+            <input type="hidden" name="q" value={{q}}>
+            <input type="hidden" name="offset" value={{prevOffset}}>
+            <button type="submit">Previous</button>
+        </form>
+    {{/if}}
+
+    {{#if nextOffset}}
+        <form method="GET" action="/search">
+            <input type="hidden" name="q" value={{q}}>
+            <input type="hidden" name="offset" value={{nextOffset}}>
+            <button type="submit">Next</button>
+        </form>
+    {{/if}}
+
+{{else}}
+    <h2>Sorry, there are no books available starting with the letter {{startKey}}</h2>
+{{/if}}
