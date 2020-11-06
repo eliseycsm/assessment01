@@ -15,7 +15,7 @@
         <form method="GET" action="/search">
             <input type="hidden" name="q" value="{{q}}">
             <input type="hidden" name="offset" value={{prevOffset}}>
-            <button type="submit">Previous</button>
+            <button type="submit" class="btn btn-primary">Previous</button>
         </form>
     {{/if}}
 
@@ -25,7 +25,7 @@
         <form method="GET" action="/search">
             <input type="hidden" name="q" value="{{q}}">
             <input type="hidden" name="offset" value={{nextOffset}}>
-            <button type="submit">Next</button>
+            <button type="submit" class="btn btn-primary">Next</button>
         </form>
     {{/if}}
     </div>

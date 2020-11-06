@@ -39,18 +39,17 @@ app.engine('hbs', handlebars({defaultLayout: 'default.hbs'}))
 app.set('view engine', 'hbs')
 app.set('views', __dirname + '/views')
 
-
-
 //get book review from NYT API via bookTitle
-app.get("/reviews/:bookTitle", async (req, resp) => {
+app.get("/reviews/:bookTitle/:author", async (req, resp) => {
     const bookTitle = req.params.bookTitle
-
+    const author = req.params.author
     if (!API_KEY) {
         console.error("API_KEY is not set up, please check.")
     }
     const fullURL = withQuery(ENDPOINT, {
         "api-key": API_KEY,
-        title: bookTitle
+        title: bookTitle,
+        author
 
     })
     const result = await fetch(fullURL)
@@ -58,7 +57,6 @@ app.get("/reviews/:bookTitle", async (req, resp) => {
     //console.log("reviews list: ", listReviews)
     
     const copyright = listReviews.copyright
-
     
     resp.status(200)
     resp.type('text/html')

@@ -1,24 +1,26 @@
-<div class="container col-md-4">
-    <img src="{{bookDetails.image_url}}">
-    <ul>
-        <li>Pages: {{bookDetails.pages}}</li>
-        <li>Rating: {{bookDetails.rating}}</li>
-        <li>Rating Count: {{bookDetails.rating_count}}</li>
-        <li>Genres: {{genre}}</li>
-    </ul>
-</div>
+<div class="row">
+    <div class="col-md-4">
+        <img src="{{bookDetails.image_url}}">
+        <ul>
+            <li>Pages: {{bookDetails.pages}}</li>
+            <li>Rating: {{bookDetails.rating}}</li>
+            <li>Rating Count: {{bookDetails.rating_count}}</li>
+            <li>Genres: {{genre}}</li>
+        </ul>
+    </div>
 
 
-<div class="container col-md-8">
-    <h3>{{bookDetails.title}}</h3>
-    By {{author}}
-    <p>
-        {{bookDetails.description}}
-    </p>
-    <p>
-        <a href="/reviews/{{bookDetails.title}}">Find Review</a>
-    </p>
-    <div class="container d-flex">
-        <a href="/" class="btn btn-primary">Home</a>
+    <div class="col-md-8">
+        <h3>{{bookDetails.title}}</h3>
+        By {{author}}
+        <p>
+            {{bookDetails.description}}
+        </p>
+        <p>
+            <a href="/reviews/{{bookDetails.title}}/{{author}}">Find Review</a>
+        </p>
+        <div class="container d-flex">
+            <a href="/" class="btn btn-primary">Home</a>
+        </div>
     </div>
 </div>

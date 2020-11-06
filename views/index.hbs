@@ -1,14 +1,19 @@
 <h2>My Bookstore</h2>
 
 <form action="/search" method="get">
+
     <div class="letter">
+        <em><h4>Find by Starting Letter</h4></em>
         {{#each alphabet}}
-            <button type="submit" name="q" id="q" value={{this}}>{{this}}</button>
+            <button type="submit" name="q" id="q" value={{this}} class="btn btn-primary">{{this}}</button>
         {{/each}}
     </div>
+    <br>
+
     <div class="numbers">
+        <em><h4>Find by Starting Number</h4></em>
         {{#each numerals}}
-            <button type="submit" name="q" id="q" value={{this}}>{{this}}</button>
+            <button type="submit" name="q" id="q" value={{this}} class="btn btn-primary">{{this}}</button>
         {{/each}}
     </div>
 </form>
