@@ -1,0 +1,14 @@
+<h2>My Bookstore</h2>
+
+<form action="/startsWith" method="get">
+    <div class="letter">
+        {{#each alphabet}}
+            <button type="submit" name="q" id="q" value={{this}}>{{this}}</button>
+        {{/each}}
+    </div>
+    <div class="numbers">
+        {{#each numerals}}
+            <button type="submit" name="q" id="q" value={{this}}>{{this}}</button>
+        {{/each}}
+    </div>
+</form>
