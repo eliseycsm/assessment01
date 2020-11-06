@@ -16,7 +16,8 @@ const LIMIT = 10
 const SQL_FIND_BOOK_BY_ID = 'select * from book2018 where book_id = ?'
 
 //env
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000
+const API_KEY = process.env.API_KEY || ''
 
 //create database connection pool
 const pool = mysql.createPool({
@@ -37,20 +38,33 @@ app.set('view engine', 'hbs')
 app.set('views', __dirname + '/views')
 
 
+
+
+
+
+
+//get book details from db
 app.get("/book/:bookId", async (req, resp) => {
     const bookId = req.params.bookId
     const conn = await pool.getConnection()
 
     try {
-        const bookDetails = await conn.query()
+        const result = await conn.query(SQL_FIND_BOOK_BY_ID, [`${bookId}`])
+        const bookDetails = result[0][0]
+        //console.info("Book details: ", bookDetails)
+        //console.info(bookDetails.title)
+
+        resp.status(200).type('text/html')
+        resp.render('details', {
+            bookDetails
+        })
+
     } catch(e){
-        (console.error("Error found: ", e)
-    } finally{
+        console.error("Error found: ", e)
+    } finally {
     conn.release()
     }
 })
-
-
 
 
 //set up index page
@@ -77,7 +91,7 @@ app.get("/search", async (req, resp) => {
         const listOfBooks = result[0]
         const bookCount = await conn.query(SQL_TOTAL_BOOKS_WITH_STARTING_KEY, [`${startKey}%`])
         const numOfBooks = bookCount[0][0]['q_count']
-        console.info("numOfBooks", numOfBooks)
+        //console.info("numOfBooks", numOfBooks)
 
         resp.status(200)
         resp.type('text/html')
