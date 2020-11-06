@@ -99,7 +99,19 @@ app.get("/book/:bookId", async (req, resp) => {
                 })
             },
             'application/json': () => {  
-                resp.send(JSON.stringify(bookDetails))
+
+                const result = { 
+                        bookId: bookDetails.book_id,
+                        title: bookDetails.title,
+                        authors: bookDetails.authors.split("|"),
+                        summary: bookDetails.description,
+                        pages: bookDetails.pages,
+                        rating: Number(bookDetails.rating),
+                        ratingCount: bookDetails.rating_count,
+                        genre: bookDetails.genres.split("|")
+                    }
+                
+                resp.send(JSON.stringify(result))
             },
             'default': () => {
                 resp.status(406)
@@ -115,20 +127,6 @@ app.get("/book/:bookId", async (req, resp) => {
     } finally {
     conn.release()
     }
-})
-
-
-//set up index page
-app.get(["/", "/index.html"], (req, resp) => {
-    const alphabet = "abcdefghijklmnopqrstuvwxyz".toUpperCase().split("")
-    const numerals = "0123456789".split("")
-
-    resp.status(200)
-    resp.type('text/html')
-    resp.render('index', {
-        alphabet ,
-        numerals
-    })
 })
 
 //process search for startKey
@@ -165,6 +163,19 @@ app.get("/search", async (req, resp) => {
         conn.release()
     }
 
+})
+
+//set up index page
+app.get(["/", "/index.html"], (req, resp) => {
+    const alphabet = "abcdefghijklmnopqrstuvwxyz".toUpperCase().split("")
+    const numerals = "0123456789".split("")
+
+    resp.status(200)
+    resp.type('text/html')
+    resp.render('index', {
+        alphabet ,
+        numerals
+    })
 })
 
 //capture error pages and redirect to main
