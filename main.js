@@ -51,16 +51,25 @@ app.get("/book/:bookId", async (req, resp) => {
     try {
         const result = await conn.query(SQL_FIND_BOOK_BY_ID, [`${bookId}`])
         const bookDetails = result[0][0]
+
+        //cleaned data
+        const authors = bookDetails['authors'].split("|").join(", ")
+        const genres = bookDetails['genres'].split("|").join(", ")
+        
+        
         //console.info("Book details: ", bookDetails)
         //console.info(bookDetails.title)
 
         resp.status(200).type('text/html')
         resp.render('details', {
-            bookDetails
+            bookDetails,
+            author: authors,
+            genre: genres
         })
 
     } catch(e){
         console.error("Error found: ", e)
+        
     } finally {
     conn.release()
     }
@@ -106,6 +115,9 @@ app.get("/search", async (req, resp) => {
 
     } catch(e){
         console.error("Error found: ", e)
+        resp.status(500).type('text/html')
+        resp.send(JSON.stringify(e))
+        
     } finally{
         conn.release()
     }
