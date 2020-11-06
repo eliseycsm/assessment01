@@ -11,7 +11,7 @@ app.use(morgan('combined'))
 
 //SQL
 const SQL_FIND_BY_STARTING_KEY = 'select book_id, title from book2018 where title like ? ORDER BY TITLE ASC LIMIT ? OFFSET ?'
-const SQL_TOTAL_BOOKS_WITH_STARTING_KEY = 'select count(*) from book2018 where title like ? '
+const SQL_TOTAL_BOOKS_WITH_STARTING_KEY = 'select count(*) as q_count from book2018 where title like ? '
 const LIMIT = 10
 
 //env
@@ -53,8 +53,8 @@ app.get(["/", "/index.html"], (req, resp) => {
 
 
 
-//process startWith
-app.get("/startsWith", async (req, resp) => {
+//process search for startKey
+app.get("/search", async (req, resp) => {
     const startKey = req.query["q"]    
     const conn = await pool.getConnection()
     const OFFSET = parseInt(req.query['offset']) || 0
@@ -62,17 +62,19 @@ app.get("/startsWith", async (req, resp) => {
     try {    
         const result = await conn.query(SQL_FIND_BY_STARTING_KEY, [`${startKey}%`, LIMIT, OFFSET])
         const listOfBooks = result[0]
-        const numOfBooks = await conn.query(SQL_TOTAL_BOOKS_WITH_STARTING_KEY, [`${startKey}%`])
-
+        const bookCount = await conn.query(SQL_TOTAL_BOOKS_WITH_STARTING_KEY, [`${startKey}%`])
+        const numOfBooks = bookCount[0][0]['q_count']
+        console.info("numOfBooks", numOfBooks)
 
         resp.status(200)
         resp.type('text/html')
         resp.render('listBooks', {
             listOfBooks,
             hasResults: listOfBooks.length > 0,
-            startKey,
+            q: startKey,
             prevOffset: Math.max(0, OFFSET - LIMIT),
             nextOffset: (OFFSET + LIMIT),
+            noMoreNext: (OFFSET + LIMIT) < numOfBooks
         })
 
     } catch(e){

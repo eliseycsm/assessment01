@@ -1,23 +1,25 @@
 {{#if hasResults}}
 
     <h2>Letter {{startKey}}</h2>
-
+    <ul>
     {{#each listOfBooks}}
-        <a href="/book/{{this.book_id}}">{{this.title}}</a>
+       <li>
+            <a href="/book/{{this.book_id}}">{{this.title}}</a>
+        </li>
     {{/each}}
-
+    </ul>
 
     {{#if prevOffset}}
         <form method="GET" action="/search">
-            <input type="hidden" name="q" value={{q}}>
+            <input type="hidden" name="q" value="{{q}}">
             <input type="hidden" name="offset" value={{prevOffset}}>
             <button type="submit">Previous</button>
         </form>
     {{/if}}
 
-    {{#if nextOffset}}
+    {{#if noMoreNext}}
         <form method="GET" action="/search">
-            <input type="hidden" name="q" value={{q}}>
+            <input type="hidden" name="q" value="{{q}}">
             <input type="hidden" name="offset" value={{nextOffset}}>
             <button type="submit">Next</button>
         </form>
