@@ -9,6 +9,8 @@
     {{/each}}
     </ul>
 
+
+    <div class="d-flex justify-content-between">
     {{#if needPrev}}
         <form method="GET" action="/search">
             <input type="hidden" name="q" value="{{q}}">
@@ -17,6 +19,8 @@
         </form>
     {{/if}}
 
+    <a href="/" class="btn btn-primary">Home</a>
+
     {{#if noMoreNext}}
         <form method="GET" action="/search">
             <input type="hidden" name="q" value="{{q}}">
@@ -24,7 +28,7 @@
             <button type="submit">Next</button>
         </form>
     {{/if}}
-
+    </div>
 {{else}}
     <h2>Sorry, there are no books available starting with the letter {{q}}</h2>
 {{/if}}

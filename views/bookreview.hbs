@@ -1,22 +1,27 @@
-{{#each reviews}}
+{{#if noResults}}
+    <h3>Sorry there are no reviews for this book</h3>
 
-    <div class="container">
-        <h2>Title: {{this.book_title}}</h2>
-        <em>by {{this.book_author}}</em>
-        <br>
-        <ul>
-            <li>Reviewer: {{this.byline}}</li>
-            <li>Date: {{this.publication_dt}}</li>
-        </ul>
-        <p>
-            {{this.summary}}
+{{else}}
+    {{#each reviews}}
 
-        </p>
 
-        <a href="{{this.url}}" target="_blank">Full Review</a>
-    </div>
+        <div class="container">
+            <h2>Title: {{this.book_title}}</h2>
+            <em>by {{this.book_author}}</em>
+            <br>
+            <ul>
+                <li>Reviewer: {{this.byline}}</li>
+                <li>Date: {{this.publication_dt}}</li>
+            </ul>
+            <p>
+                {{this.summary}}
 
-{{/each}}
+            </p>
 
+            <a href="{{this.url}}" target="_blank">Full Review</a>
+        </div>
+
+    {{/each}}
+{{/if}}
 
 {{this.copyright}}

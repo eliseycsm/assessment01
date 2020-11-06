@@ -16,8 +16,8 @@ const LIMIT = 10
 const SQL_FIND_BOOK_BY_ID = 'select * from book2018 where book_id = ?'
 
 //env
-const PORT = process.env.PORT || 3000
-const API_KEY = process.env.API_KEY || ''
+const PORT = process.env.PORT || ""
+const API_KEY = process.env.API_KEY || ""
 const ENDPOINT = 'https://api.nytimes.com/svc/books/v3/reviews.json'
 
 
@@ -45,6 +45,9 @@ app.set('views', __dirname + '/views')
 app.get("/reviews/:bookTitle", async (req, resp) => {
     const bookTitle = req.params.bookTitle
 
+    if (!API_KEY) {
+        console.error("API_KEY is not set up, please check.")
+    }
     const fullURL = withQuery(ENDPOINT, {
         "api-key": API_KEY,
         title: bookTitle
@@ -56,22 +59,16 @@ app.get("/reviews/:bookTitle", async (req, resp) => {
     
     const copyright = listReviews.copyright
 
-    if (listReviews.num_results <= 0){
-        resp.status(200)
-        resp.type('text/html')
-        resp.send("<h3>Sorry, there are no reviews available for this book.</h3>")
-    } else {
-        resp.status(200)
-        resp.type('text/html')
-        resp.render('bookreview', {
-            reviews: listReviews.results,
-            copyright
-        })
+    
+    resp.status(200)
+    resp.type('text/html')
+    resp.render('bookreview', {
+        noResults: !!(listReviews.num_results <= 0),
+        reviews: listReviews.results,
+        copyright
+    })
     }
-
-
-
-})
+)
 
 
 //get book details from db
