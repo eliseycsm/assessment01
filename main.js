@@ -13,6 +13,7 @@ app.use(morgan('combined'))
 const SQL_FIND_BY_STARTING_KEY = 'select book_id, title from book2018 where title like ? ORDER BY TITLE ASC LIMIT ? OFFSET ?'
 const SQL_TOTAL_BOOKS_WITH_STARTING_KEY = 'select count(*) as q_count from book2018 where title like ? '
 const LIMIT = 10
+const SQL_FIND_BOOK_BY_ID = 'select * from book2018 where book_id = ?'
 
 //env
 const PORT = process.env.PORT || 3000;
@@ -30,15 +31,29 @@ const pool = mysql.createPool({
     timezone: '+08:00'
 })
 
-
-
-
 //handlebars config
 app.engine('hbs', handlebars({defaultLayout: 'default.hbs'}))
 app.set('view engine', 'hbs')
 app.set('views', __dirname + '/views')
 
 
+app.get("/book/:bookId", async (req, resp) => {
+    const bookId = req.params.bookId
+    const conn = await pool.getConnection()
+
+    try {
+        const bookDetails = await conn.query()
+    } catch(e){
+        (console.error("Error found: ", e)
+    } finally{
+    conn.release()
+    }
+})
+
+
+
+
+//set up index page
 app.get(["/", "/index.html"], (req, resp) => {
     const alphabet = "abcdefghijklmnopqrstuvwxyz".toUpperCase().split("")
     const numerals = "0123456789".split("")
@@ -50,8 +65,6 @@ app.get(["/", "/index.html"], (req, resp) => {
         numerals
     })
 })
-
-
 
 //process search for startKey
 app.get("/search", async (req, resp) => {
